@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { ECO_WEIGHT } from '../lib/session'
 import type { Domain } from '../types'
 import { QUESTIONS } from './questions'
+import { TOPICS } from './topics'
 
 describe('문제 은행', () => {
   it('id가 중복되지 않는다', () => {
@@ -34,5 +35,10 @@ describe('문제 은행', () => {
       const share = QUESTIONS.filter((q) => q.domain === d).length / QUESTIONS.length
       expect(Math.abs(share - ECO_WEIGHT[d]), d).toBeLessThan(0.03)
     }
+  })
+
+  it('모든 문항이 자기 영역의 학습 주제로 분류되어 있다', () => {
+    const bad = QUESTIONS.filter((q) => !q.topic || !TOPICS[q.domain].includes(q.topic)).map((q) => q.id)
+    expect(bad).toEqual([])
   })
 })
