@@ -37,6 +37,14 @@ export async function fetchServerQuestions(): Promise<Question[]> {
   return res.ok ? ((await res.json()) as Question[]) : []
 }
 
+/** 문항을 서버 DB에 추가 (같은 id는 갱신) */
+export async function uploadQuestions(qs: Question[]): Promise<number> {
+  const res = await fetch('/api/questions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(qs) })
+  const body = (await res.json()) as { upserted?: number; error?: string }
+  if (!res.ok) throw new Error(body.error ?? `업로드 실패 (${res.status})`)
+  return body.upserted ?? 0
+}
+
 type Remote = Partial<StoreData> & { updatedAt?: number }
 interface ProgressBody {
   cards?: StoreData['cards']

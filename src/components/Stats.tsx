@@ -33,9 +33,11 @@ interface Props {
   sync: SyncStatus
   backend: 'server' | 'claude' | 'gist' | null
   resync: () => void
+  /** 서버 모드: 가져온 문항을 서버 DB에 올리고 모든 기기에서 쓰게 한다 */
+  onServerImport?: (qs: Question[]) => Promise<number>
 }
 
-export function Stats({ data, byId, commit, sync, backend, resync }: Props) {
+export function Stats({ data, byId, commit, sync, backend, resync, onServerImport }: Props) {
   const { all, domain, edition, weakTags } = summarize(data, byId)
   const trend = dailyTrend(data, byId)
   const exams = examHistory(data, byId)
@@ -182,6 +184,13 @@ export function Stats({ data, byId, commit, sync, backend, resync }: Props) {
             onChange={() =>
               readFile(qInput.current, (t) => {
                 const qs = parseQuestions(t)
+                if (onServerImport) {
+                  setMsg('서버에 올리는 중…')
+                  void onServerImport(qs)
+                    .then((n) => setMsg(`${n}문항을 서버 문제은행에 추가했습니다. 모든 기기에서 바로 쓸 수 있습니다.`))
+                    .catch((e: Error) => setMsg(`⚠ ${e.message}`))
+                  return
+                }
                 commit((d) => {
                   const ids = new Set(qs.map((q) => q.id))
                   return { ...d, customQuestions: [...d.customQuestions.filter((q) => !ids.has(q.id)), ...qs] }

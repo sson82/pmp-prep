@@ -85,6 +85,33 @@ app.get('/api/questions', async (_req, res) => {
   res.set('Cache-Control', 'no-store').json(rows.map((r) => r.data))
 })
 
+// 문항 일괄 추가·수정 (앱의 '문제 세트 가져오기' 또는 변환 파이프라인). 같은 id는 덮어쓴다
+app.post('/api/questions', async (req, res) => {
+  const qs = Array.isArray(req.body) ? req.body : []
+  const bad = qs.filter(
+    (q) => !q?.id || !q.stem || !Array.isArray(q.options) || !Array.isArray(q.answer) || q.answer.some((a) => !Number.isInteger(a) || a < 0 || a >= q.options.length),
+  )
+  if (!qs.length || bad.length) return res.status(400).json({ error: `잘못된 문항 ${bad.length}개`, ids: bad.slice(0, 10).map((q) => q?.id) })
+  const client = await pool.connect()
+  try {
+    await client.query('begin')
+    for (const q of qs) {
+      await client.query(
+        `insert into pmp_questions (id, data, source) values ($1, $2, $3)
+         on conflict (id) do update set data = $2, source = $3, updated_at = now()`,
+        [q.id, q, q.source ?? 'import'],
+      )
+    }
+    await client.query('commit')
+  } catch (e) {
+    await client.query('rollback')
+    throw e
+  } finally {
+    client.release()
+  }
+  res.json({ upserted: qs.length })
+})
+
 app.get('/api/progress', async (_req, res) => {
   const { rows } = await pool.query("select data, version from pmp_progress where id = 'me'")
   // bigint는 pg 드라이버가 문자열로 돌려주므로 숫자로 변환

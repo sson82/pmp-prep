@@ -10,7 +10,7 @@ import { Wrong } from './components/Wrong'
 import { QUESTIONS } from './data/questions'
 import { topicFrequency } from './lib/frequency'
 import { buildReviewQueue, dueQuestions, shuffle, wrongQuestions } from './lib/session'
-import { detectServer, fetchServerQuestions, type ServerMode } from './lib/server'
+import { detectServer, fetchServerQuestions, uploadQuestions, type ServerMode } from './lib/server'
 import { useStore } from './lib/useStore'
 import type { Question, SessionMode } from './types'
 
@@ -120,7 +120,23 @@ function Main({ mode }: { mode: ServerMode }) {
         {view === 'compare' && (
           <Compare onDrill={() => start({ title: '8판 집중', questions: shuffle(bank.filter((q) => q.edition === '8th')).slice(0, 20), mode: 'practice' })} />
         )}
-        {view === 'stats' && <Stats data={data} byId={byId} commit={commit} sync={sync} backend={backend} resync={resync} />}
+        {view === 'stats' && <Stats
+            data={data}
+            byId={byId}
+            commit={commit}
+            sync={sync}
+            backend={backend}
+            resync={resync}
+            onServerImport={
+              mode === 'ready'
+                ? async (qs) => {
+                    const n = await uploadQuestions(qs)
+                    setServerQuestions(await fetchServerQuestions())
+                    return n
+                  }
+                : undefined
+            }
+          />}
       </main>
 
       <nav className="nav-bottom">
