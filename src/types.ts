@@ -20,6 +20,18 @@ export interface Question {
   optionNotes?: string[]
   /** 7판 vs 8판 관점 차이 포인트 */
   diffNote?: string
+  /** 학습 체계 분류용 대표 주제 (src/data/topics.ts) */
+  topic?: string
+  /** 문제 의도: 이 문제가 확인하려는 역량 */
+  intent?: string
+  /** 바라보는 관점: PMI가 기대하는 판단 방식 */
+  perspective?: string
+  /** 풀이 팁: 함정 보기·키워드 */
+  tip?: string
+  /** 출처 (예: 'ITPE 2021.07 모의고사 #12') */
+  source?: string
+  /** 정답 근거: 'official' 원본 정답 / 'ai' AI 풀이(두 번 독립 풀이 일치) / 'review' 풀이 불일치로 검토 필요 */
+  answerBasis?: 'official' | 'ai' | 'review'
 }
 
 export interface Attempt {
@@ -30,6 +42,8 @@ export interface Attempt {
   selected: number[]
   confidence: Confidence
   mode: SessionMode
+  /** 같은 세션(한 번의 풀이 묶음)을 구분하는 키. 실전 회차별 점수 추이에 사용 */
+  sid?: number
 }
 
 export interface CardState {

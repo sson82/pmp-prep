@@ -10,7 +10,7 @@ interface Props {
   dueCount: number
   sync: SyncStatus
   onReview: () => void
-  go: (v: 'practice' | 'wrong' | 'mock' | 'compare') => void
+  go: (v: 'learn' | 'exam' | 'wrong' | 'compare') => void
 }
 
 const SYNC_LABEL: Record<SyncStatus, string> = {
@@ -69,17 +69,17 @@ export function Home({ data, bank, byId, dueCount, sync, onReview, go }: Props) 
       </section>
 
       <section className="tiles">
+        <button className="tile" onClick={() => go('learn')}>
+          <b>문제 학습</b>
+          <span className="muted">영역 → 주제별 체계 학습</span>
+        </button>
+        <button className="tile" onClick={() => go('exam')}>
+          <b>실전 문제</b>
+          <span className="muted">영역·문항 수 선택 · 시간 제한</span>
+        </button>
         <button className="tile" onClick={() => go('wrong')}>
-          <b>오답노트</b>
+          <b>오답 관리</b>
           <span className="muted">{wrongCount}문항 누적</span>
-        </button>
-        <button className="tile" onClick={() => go('practice')}>
-          <b>맞춤 연습</b>
-          <span className="muted">도메인 · 판 · 방식 선택</span>
-        </button>
-        <button className="tile" onClick={() => go('mock')}>
-          <b>모의고사</b>
-          <span className="muted">ECO 비중 · 시간 제한</span>
         </button>
         <button className="tile" onClick={() => go('compare')}>
           <b>7판 vs 8판</b>

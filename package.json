@@ -8,9 +8,13 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "deploy": "npm run build && sh scripts/deploy.sh"
+    "deploy": "npm run build && sh scripts/deploy.sh",
+    "start": "node server/index.mjs",
+    "seed": "node scripts/seed.mjs"
   },
   "dependencies": {
+    "express": "^5.2.1",
+    "pg": "^8.23.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

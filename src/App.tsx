@@ -1,16 +1,20 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Compare } from './components/Compare'
 import { Home } from './components/Home'
+import { Login } from './components/Login'
 import { Quiz } from './components/Quiz'
-import { MockSetup, PracticeSetup } from './components/Setup'
+import { Exam } from './components/Exam'
+import { Learn } from './components/Learn'
 import { Stats } from './components/Stats'
 import { Wrong } from './components/Wrong'
 import { QUESTIONS } from './data/questions'
-import { buildMock, buildPractice, buildReviewQueue, dueQuestions, wrongQuestions } from './lib/session'
+import { topicFrequency } from './lib/frequency'
+import { buildReviewQueue, dueQuestions, shuffle, wrongQuestions } from './lib/session'
+import { detectServer, fetchServerQuestions, type ServerMode } from './lib/server'
 import { useStore } from './lib/useStore'
 import type { Question, SessionMode } from './types'
 
-type View = 'home' | 'practice' | 'mock' | 'wrong' | 'compare' | 'stats'
+type View = 'home' | 'learn' | 'exam' | 'wrong' | 'compare' | 'stats'
 
 interface Session {
   key: number
@@ -22,19 +26,35 @@ interface Session {
 
 const NAV: { view: View; label: string; icon: string }[] = [
   { view: 'home', label: '홈', icon: '⌂' },
-  { view: 'wrong', label: '오답노트', icon: '✎' },
-  { view: 'practice', label: '연습', icon: '◎' },
-  { view: 'compare', label: '7 vs 8', icon: '⇄' },
-  { view: 'stats', label: '통계', icon: '▤' },
+  { view: 'learn', label: '문제학습', icon: '◎' },
+  { view: 'exam', label: '실전문제', icon: '⏱' },
+  { view: 'wrong', label: '오답관리', icon: '✎' },
+  { view: 'stats', label: '학습현황', icon: '▤' },
 ]
 
 export default function App() {
-  const { data, sync, backend, resync, commit, record } = useStore()
+  const [mode, setMode] = useState<ServerMode | null>(null)
+  useEffect(() => {
+    void detectServer().then(setMode)
+  }, [])
+  if (mode === null) return null
+  if (mode === 'login') return <Login onDone={() => setMode('ready')} />
+  return <Main mode={mode} />
+}
+
+function Main({ mode }: { mode: ServerMode }) {
+  const { data, sync, backend, resync, commit, record } = useStore(mode)
+  // 서버 모드에서는 DB의 비공개 문항(학원 자료)을 함께 사용
+  const [serverQuestions, setServerQuestions] = useState<Question[]>([])
+  useEffect(() => {
+    if (mode === 'ready') void fetchServerQuestions().then(setServerQuestions)
+  }, [mode])
   const [view, setView] = useState<View>('home')
   const [session, setSession] = useState<Session | null>(null)
 
-  const bank = useMemo(() => [...QUESTIONS, ...data.customQuestions], [data.customQuestions])
+  const bank = useMemo(() => [...QUESTIONS, ...serverQuestions, ...data.customQuestions], [serverQuestions, data.customQuestions])
   const byId = useMemo(() => new Map(bank.map((q) => [q.id, q])), [bank])
+  const freq = useMemo(() => topicFrequency(bank), [bank])
 
   const start = (s: Omit<Session, 'key'>) => {
     setSession({ ...s, key: Date.now() })
@@ -47,6 +67,8 @@ export default function App() {
         <Quiz
           {...session}
           key={session.key}
+          sid={session.key}
+          freq={freq}
           onRecord={record}
           onExit={() => {
             setSession(null)
@@ -84,37 +106,19 @@ export default function App() {
             go={setView}
           />
         )}
-        {view === 'practice' && (
-          <PracticeSetup
-            available={(f) => buildPractice(data, bank, f).length}
-            onStart={(f) => start({ title: '맞춤 연습', questions: buildPractice(data, bank, f), mode: 'practice' })}
+        {view === 'learn' && (
+          <Learn
+            data={data}
+            bank={bank}
+            freq={freq}
+            onStudy={(title, qs) => start({ title, questions: shuffle(qs), mode: 'practice' })}
+            onCompare={() => setView('compare')}
           />
         )}
-        {view === 'mock' && (
-          <MockSetup
-            bankSize={bank.length}
-            onStart={(count, min) => start({ title: '모의고사', questions: buildMock(bank, count), mode: 'mock', timeLimitSec: min * 60 })}
-          />
-        )}
-        {view === 'wrong' && (
-          <Wrong data={data} questions={wrongQuestions(data, bank)} onRetry={(qs) => start({ title: '오답 다시 풀기', questions: qs, mode: 'wrong' })} />
-        )}
+        {view === 'exam' && <Exam data={data} bank={bank} onStart={(title, qs, timeLimitSec) => start({ title, questions: qs, mode: 'mock', timeLimitSec })} />}
+        {view === 'wrong' && <Wrong data={data} questions={wrongQuestions(data, bank)} freq={freq} onRetry={(title, qs) => start({ title, questions: qs, mode: 'wrong' })} />}
         {view === 'compare' && (
-          <Compare
-            onDrill={() =>
-              start({
-                title: '8판 집중',
-                questions: buildPractice(data, bank, {
-                  domains: ['people', 'process', 'business'],
-                  editions: ['8th'],
-                  approaches: ['predictive', 'agile', 'hybrid'],
-                  count: 20,
-                  onlyUnseen: false,
-                }),
-                mode: 'practice',
-              })
-            }
-          />
+          <Compare onDrill={() => start({ title: '8판 집중', questions: shuffle(bank.filter((q) => q.edition === '8th')).slice(0, 20), mode: 'practice' })} />
         )}
         {view === 'stats' && <Stats data={data} byId={byId} commit={commit} sync={sync} backend={backend} resync={resync} />}
       </main>

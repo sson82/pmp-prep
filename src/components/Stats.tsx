@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react'
 import type { SyncStatus } from '../lib/cloud'
-import { accuracy, avgSec, summarize, type Bucket } from '../lib/stats'
+import { accuracy, avgSec, dailyTrend, examHistory, summarize, type Bucket } from '../lib/stats'
 import { TARGET_MS } from '../lib/srs'
 import { download, emptyStore, parseBackup, parseQuestions } from '../lib/storage'
 import type { Domain, Edition, Question, StoreData } from '../types'
 import { DOMAIN_LABEL, EDITION_LABEL } from '../types'
 import { SyncPanel } from './SyncPanel'
+import { TrendChart } from './TrendChart'
 
 function Meter({ label, b }: { label: string; b: Bucket }) {
   const pct = Math.round(accuracy(b) * 100)
@@ -30,12 +31,15 @@ interface Props {
   byId: Map<string, Question>
   commit: (fn: (d: StoreData) => StoreData) => void
   sync: SyncStatus
-  backend: 'claude' | 'gist' | null
+  backend: 'server' | 'claude' | 'gist' | null
   resync: () => void
 }
 
 export function Stats({ data, byId, commit, sync, backend, resync }: Props) {
   const { all, domain, edition, weakTags } = summarize(data, byId)
+  const trend = dailyTrend(data, byId)
+  const exams = examHistory(data, byId)
+  const pct = (b: Bucket) => (b.total ? `${Math.round(accuracy(b) * 100)}%` : '–')
   const [msg, setMsg] = useState('')
   const backupInput = useRef<HTMLInputElement>(null)
   const qInput = useRef<HTMLInputElement>(null)
@@ -56,7 +60,59 @@ export function Stats({ data, byId, commit, sync, backend, resync }: Props) {
   return (
     <div className="stats">
       <section className="card">
-        <h2>도메인별 정답률</h2>
+        <h2>점수 변화</h2>
+        {trend.labels.length < 2 ? (
+          <p className="muted">이틀 이상 공부하면 날짜별 정답률 추이가 표시됩니다.</p>
+        ) : (
+          <TrendChart
+            labels={trend.labels}
+            series={[
+              { key: 'all', label: '전체', color: '--s1', values: trend.all },
+              { key: 'people', label: 'People', color: '--s2', values: trend.domain.people },
+              { key: 'process', label: 'Process', color: '--s3', values: trend.domain.process },
+              { key: 'business', label: 'Business', color: '--s4', values: trend.domain.business },
+            ]}
+          />
+        )}
+        <p className="muted small">점선은 목표 정답률 70%. 영역 선은 그날 해당 영역을 3문항 이상 푼 날만 찍힙니다.</p>
+      </section>
+
+      <section className="card">
+        <h2>실전 회차별 점수</h2>
+        {exams.length === 0 ? (
+          <p className="muted">실전 문제를 풀면 회차별 점수가 쌓입니다.</p>
+        ) : (
+          <table className="exam-table">
+            <thead>
+              <tr>
+                <th>날짜</th>
+                <th>문항</th>
+                <th>전체</th>
+                <th>People</th>
+                <th>Process</th>
+                <th>Business</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...exams].reverse().map((e) => (
+                <tr key={e.at}>
+                  <td>{new Date(e.at).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' })}</td>
+                  <td>{e.all.total}</td>
+                  <td>
+                    <b>{pct(e.all)}</b>
+                  </td>
+                  <td>{pct(e.domain.people)}</td>
+                  <td>{pct(e.domain.process)}</td>
+                  <td>{pct(e.domain.business)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
+
+      <section className="card">
+        <h2>영역별 정답률</h2>
         <p className="muted">최근 300회 풀이 기준 · 권장 풀이 시간 {TARGET_MS / 1000}초/문항</p>
         <Meter label="전체" b={all} />
         {(Object.keys(domain) as Domain[]).map((d) => (
@@ -72,11 +128,11 @@ export function Stats({ data, byId, commit, sync, backend, resync }: Props) {
       </section>
 
       <section className="card">
-        <h2>취약 주제</h2>
+        <h2>취약 주제 TOP 6</h2>
         {weakTags.length === 0 ? (
           <p className="muted">주제별로 2문항 이상 풀면 표시됩니다.</p>
         ) : (
-          weakTags.map(([t, b]) => <Meter key={t} label={`#${t}`} b={b} />)
+          weakTags.map(([t, b]) => <Meter key={t} label={t} b={b} />)
         )}
       </section>
 

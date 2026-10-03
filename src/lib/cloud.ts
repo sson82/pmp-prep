@@ -33,7 +33,7 @@ declare global {
 
 export const MAX_HISTORY = 3000
 
-export type CompactAttempt = [string, number, 0 | 1, number, string, string, string]
+export type CompactAttempt = [string, number, 0 | 1, number, string, string, string, number?]
 const CONF: Confidence[] = ['low', 'mid', 'high']
 const MODES: SessionMode[] = ['review', 'practice', 'wrong', 'mock']
 
@@ -45,7 +45,8 @@ export const pack = (a: Attempt): CompactAttempt => [
   a.selected.join(','),
   a.confidence[0],
   a.mode[0],
-]
+  ...(a.sid ? [a.sid] : []),
+] as CompactAttempt
 export const unpack = (c: CompactAttempt): Attempt => ({
   qid: c[0],
   at: c[1],
@@ -54,6 +55,7 @@ export const unpack = (c: CompactAttempt): Attempt => ({
   selected: c[4] ? c[4].split(',').map(Number) : [],
   confidence: CONF.find((x) => x[0] === c[5]) ?? 'mid',
   mode: MODES.find((x) => x[0] === c[6]) ?? 'practice',
+  ...(c[7] ? { sid: c[7] } : {}),
 })
 
 /** 두 기기의 진행 데이터를 병합: 카드는 마지막 풀이 시점 기준, 풀이 기록은 합집합 */

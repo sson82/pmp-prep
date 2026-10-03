@@ -1,19 +1,25 @@
 import { useState } from 'react'
 import type { SyncStatus } from '../lib/cloud'
 import { connectGist, loadGistConfig, saveGistConfig } from '../lib/gist'
+import { logout } from '../lib/server'
 
 const TOKEN_URL = 'https://github.com/settings/tokens/new?scopes=gist&description=PMP%20Prep%20sync'
 
-export function SyncPanel({ backend, sync, onChange }: { backend: 'claude' | 'gist' | null; sync: SyncStatus; onChange: () => void }) {
+export function SyncPanel({ backend, sync, onChange }: { backend: 'server' | 'claude' | 'gist' | null; sync: SyncStatus; onChange: () => void }) {
   const [token, setToken] = useState('')
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState('')
 
-  if (backend === 'claude') {
+  if (backend === 'claude' || backend === 'server') {
     return (
       <section className="card">
         <h2>기기 동기화</h2>
-        <p className="muted">claude.ai 계정 저장소로 자동 동기화 중입니다.</p>
+        <p className="muted">{backend === 'server' ? '서버 DB에 자동 저장 중입니다. 같은 주소로 접속한 모든 기기가 같은 기록을 씁니다.' : 'claude.ai 계정 저장소로 자동 동기화 중입니다.'}</p>
+        {backend === 'server' && (
+          <button className="btn" onClick={() => void logout().then(() => location.reload())}>
+            이 기기 로그아웃
+          </button>
+        )}
       </section>
     )
   }

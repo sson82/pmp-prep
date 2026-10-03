@@ -28,7 +28,7 @@ export function summarize(data: StoreData, byId: Map<string, Question>, recent =
     add(all, a)
     add(domain[q.domain], a)
     add(edition[q.edition], a)
-    for (const t of q.tags) {
+    for (const t of q.topic ? [q.topic] : q.tags) {
       if (!tags.has(t)) tags.set(t, emptyBucket())
       add(tags.get(t)!, a)
     }
@@ -56,4 +56,52 @@ export function streakDays(attempts: Attempt[], now = Date.now()): number {
 export function todayCount(attempts: Attempt[], now = Date.now()): number {
   const today = new Date(now).toDateString()
   return attempts.filter((a) => new Date(a.at).toDateString() === today).length
+}
+
+const dayKey = (t: number) => {
+  const d = new Date(t)
+  return `${d.getMonth() + 1}/${d.getDate()}`
+}
+
+/** 날짜별 정답률(%) — 전체와 영역별. 영역은 그날 3문항 이상 푼 경우만 점을 찍는다 */
+export function dailyTrend(data: StoreData, byId: Map<string, Question>, maxDays = 30) {
+  const days: string[] = []
+  const buckets = new Map<string, { all: Bucket; domain: Record<Domain, Bucket> }>()
+  for (const a of data.attempts) {
+    const q = byId.get(a.qid)
+    if (!q) continue
+    const k = dayKey(a.at)
+    if (!buckets.has(k)) {
+      days.push(k)
+      buckets.set(k, { all: emptyBucket(), domain: { people: emptyBucket(), process: emptyBucket(), business: emptyBucket() } })
+    }
+    const b = buckets.get(k)!
+    add(b.all, a)
+    add(b.domain[q.domain], a)
+  }
+  const labels = days.slice(-maxDays)
+  const pct = (b: Bucket, min: number) => (b.total >= min ? Math.round(accuracy(b) * 100) : null)
+  return {
+    labels,
+    all: labels.map((k) => pct(buckets.get(k)!.all, 1)),
+    domain: (['people', 'process', 'business'] as Domain[]).reduce(
+      (acc, d) => ({ ...acc, [d]: labels.map((k) => pct(buckets.get(k)!.domain[d], 3)) }),
+      {} as Record<Domain, (number | null)[]>,
+    ),
+  }
+}
+
+/** 실전 회차별 점수 (mode 'mock' 기록을 세션 키로 묶음) */
+export function examHistory(data: StoreData, byId: Map<string, Question>) {
+  const sessions = new Map<number, { at: number; all: Bucket; domain: Record<Domain, Bucket> }>()
+  for (const a of data.attempts) {
+    if (a.mode !== 'mock' || !a.sid) continue
+    const q = byId.get(a.qid)
+    if (!q) continue
+    if (!sessions.has(a.sid)) sessions.set(a.sid, { at: a.at, all: emptyBucket(), domain: { people: emptyBucket(), process: emptyBucket(), business: emptyBucket() } })
+    const s = sessions.get(a.sid)!
+    add(s.all, a)
+    add(s.domain[q.domain], a)
+  }
+  return [...sessions.values()].sort((a, b) => a.at - b.at)
 }

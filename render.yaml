@@ -1,0 +1,18 @@
+# Render Blueprint: 대시보드 → New → Blueprint → 이 저장소 선택
+services:
+  - type: web
+    name: pmp-prep
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: node server/index.mjs
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL # Render Postgres의 Internal Database URL (같은 리전)
+        sync: false
+      - key: APP_PASSWORD # 앱 로그인 비밀번호
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true

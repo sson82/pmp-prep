@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Attempt, Question, StoreData } from '../types'
 import { mergeStores, startCloudSync, type CloudSync, type SyncStatus } from './cloud'
 import { loadGistConfig, startGistSync } from './gist'
+import { startServerSync, type ServerMode } from './server'
 import { grade, newCard, schedule } from './srs'
 import { LocalStorageRepository } from './storage'
 
@@ -16,10 +17,10 @@ const readUpdatedAt = () => {
   }
 }
 
-export function useStore() {
+export function useStore(serverMode: ServerMode) {
   const [data, setData] = useState<StoreData>(() => repo.load())
   const [sync, setSync] = useState<SyncStatus>('local')
-  const [backend, setBackend] = useState<'claude' | 'gist' | null>(null)
+  const [backend, setBackend] = useState<'server' | 'claude' | 'gist' | null>(null)
   /** Gist 연결 설정이 바뀌면 증가시켜 동기화를 다시 시작 */
   const [epoch, setEpoch] = useState(0)
   const updatedAt = useRef(readUpdatedAt())
@@ -39,6 +40,17 @@ export function useStore() {
       dirty.current = true
     }
     const onStatus = (s: SyncStatus) => alive && setSync(s)
+    if (serverMode === 'ready') {
+      // 자체 서버(Render)에서 열린 경우: 서버 DB가 모든 기기의 기준 저장소
+      handle = startServerSync(onRemote, onStatus)
+      cloud.current = handle
+      setBackend('server')
+      return () => {
+        alive = false
+        handle?.stop()
+        cloud.current = null
+      }
+    }
     // claude.ai 아티팩트 안이면 claude 저장소, 아니면 설정된 GitHub Gist
     void startCloudSync(onRemote, onStatus).then((c) => {
       if (!c) {
@@ -56,7 +68,7 @@ export function useStore() {
       handle?.stop()
       cloud.current = null
     }
-  }, [epoch])
+  }, [epoch, serverMode])
 
   useEffect(() => {
     repo.save(data)
