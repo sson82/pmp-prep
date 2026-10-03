@@ -2,8 +2,8 @@ import type { CardState, Confidence } from '../types'
 
 const MIN = 60_000
 const DAY = 86_400_000
-/** 실제 시험 기준 문항당 권장 시간: 230분 / 180문항 ≈ 77초 */
-export const TARGET_MS = 77_000
+/** 실제 시험(2026.7 개정) 기준 문항당 권장 시간: 240분 / 180문항 = 80초 */
+export const TARGET_MS = 80_000
 
 export function newCard(qid: string, now: number): CardState {
   return { qid, ease: 2.5, interval: 0, reps: 0, lapses: 0, due: now, lastAt: 0, wrongCount: 0 }

@@ -7,7 +7,7 @@ export interface DiffRow {
 
 /**
  * PMBOK 7판 vs 8판 핵심 비교.
- * 8판(2025년 말 발행) 세부 명칭은 PMI 공식 원문으로 최종 확인할 것.
+ * 8판(2025년 11월 디지털판 발행). 원칙·성과 영역·중점 영역 명칭은 복수 출처로 교차 확인함(2026-10).
  */
 export const EDITION_DIFF: DiffRow[] = [
   {
@@ -31,7 +31,7 @@ export const EDITION_DIFF: DiffRow[] = [
   {
     topic: '프로세스 / 활동 구분',
     v7: '없음 (모델·방법·산출물(Models, Methods, Artifacts)로 대체)',
-    v8: '5개 중점 영역(Focus Areas): 착수 · 기획 · 실행 · 감시 및 통제 · 종료',
+    v8: '5개 중점 영역(Focus Areas): 착수 · 기획 · 실행 · 감시 및 통제 · 종료. 40개 프로세스(ITTO 포함, 비규범적·테일러링 가능)',
     exam: '프로세스 그룹 개념이 "중점 영역"이라는 이름으로 다시 돌아옴',
   },
   {
@@ -55,7 +55,7 @@ export const EDITION_DIFF: DiffRow[] = [
   {
     topic: 'AI / 디지털',
     v7: '사실상 언급 없음',
-    v8: 'AI 활용 지침(부록) 포함: 자동화, 예측 분석, 거버넌스·윤리',
+    v8: 'AI 활용 지침 포함: 자동화, 예측 분석, 거버넌스·윤리',
     exam: 'AI 도입 상황 → 조직 정책 확인 + 사람의 검토(human-in-the-loop) + 데이터 보호',
   },
   {
@@ -66,11 +66,11 @@ export const EDITION_DIFF: DiffRow[] = [
   },
   {
     topic: '조달',
-    v7: '독립적인 다룸 없음',
-    v8: '조달 관련 지침을 부록으로 보강',
+    v7: '독립적으로 다루지 않음',
+    v8: '조달·PMO·현대적 계약 방식 지침 보강',
     exam: '계약 유형·클레임 처리 문제는 여전히 출제됨',
   },
 ]
 
 export const ECO_NOTE =
-  '2026년 개정 시험 기준 ECO 비중(People 33% · Process 41% · Business Environment 26%)으로 모의고사를 구성합니다. 최신 ECO는 PMI 공식 문서로 확인하세요.'
+  '2026년 7월 9일 개정 시험 기준: 180문항 · 240분, ECO 비중 People 33% · Process 41% · Business Environment 26% (이전 42/50/8). 시험은 ECO 기반이며 PMBOK 8판이 주요 참고서입니다.'

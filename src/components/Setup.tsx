@@ -57,9 +57,9 @@ export function PracticeSetup({ available, onStart }: { available: (f: PracticeF
 
 export function MockSetup({ bankSize, onStart }: { bankSize: number; onStart: (count: number, minutes: number) => void }) {
   const presets = [
-    { label: '미니 (20문항 · 26분)', count: 20, min: 26 },
-    { label: '하프 (60문항 · 77분)', count: 60, min: 77 },
-    { label: '실전 (180문항 · 230분)', count: 180, min: 230 },
+    { label: '미니 (20문항 · 27분)', count: 20, min: 27 },
+    { label: '하프 (60문항 · 80분)', count: 60, min: 80 },
+    { label: '실전 (180문항 · 240분)', count: 180, min: 240 },
   ]
   return (
     <div className="card form">

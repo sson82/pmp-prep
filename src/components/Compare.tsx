@@ -9,7 +9,7 @@ export function Compare({ onDrill }: { onDrill: () => void }) {
           8판 문항 풀기
         </button>
       </div>
-      <p className="muted">8판의 세부 명칭은 PMI 공식 원문으로 최종 확인하세요.</p>
+      <p className="muted">8판: 2025년 11월 발행 · 6원칙 · 7성과 영역 · 5중점 영역 · 40프로세스</p>
       <div className="diff-grid">
         {EDITION_DIFF.map((r) => (
           <section key={r.topic} className="diff-row">
