@@ -10,7 +10,7 @@ import { Wrong } from './components/Wrong'
 import { QUESTIONS } from './data/questions'
 import { topicFrequency } from './lib/frequency'
 import { buildReviewQueue, dueQuestions, shuffle, wrongQuestions } from './lib/session'
-import { detectServer, fetchServerQuestions, uploadQuestions, type ServerMode } from './lib/server'
+import { cachedServerQuestions, detectServer, fetchServerQuestions, uploadQuestions, type ServerMode } from './lib/server'
 import { useStore } from './lib/useStore'
 import type { Question, SessionMode } from './types'
 
@@ -45,7 +45,7 @@ export default function App() {
 function Main({ mode }: { mode: ServerMode }) {
   const { data, sync, backend, resync, commit, record } = useStore(mode)
   // 서버 모드에서는 DB의 비공개 문항(학원 자료)을 함께 사용
-  const [serverQuestions, setServerQuestions] = useState<Question[]>([])
+  const [serverQuestions, setServerQuestions] = useState<Question[]>(() => (mode === 'ready' ? cachedServerQuestions() : []))
   useEffect(() => {
     if (mode === 'ready') void fetchServerQuestions().then(setServerQuestions)
   }, [mode])

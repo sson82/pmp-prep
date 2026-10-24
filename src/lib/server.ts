@@ -29,12 +29,36 @@ export async function login(password: string): Promise<void> {
 
 export async function logout(): Promise<void> {
   await fetch('/api/logout', { method: 'POST' })
+  // 로그아웃한 기기에는 비공개 문항을 남기지 않는다
+  try {
+    localStorage.removeItem('pmp-prep:server-questions')
+  } catch {
+    // ignore
+  }
 }
 
-/** 서버 DB에 저장된 비공개 문항(학원 자료 등) */
+const Q_CACHE = 'pmp-prep:server-questions'
+
+/** 이 기기에 저장해 둔 서버 문항 (다음 접속 때 즉시 표시용) */
+export function cachedServerQuestions(): Question[] {
+  try {
+    return JSON.parse(localStorage.getItem(Q_CACHE) ?? '[]') as Question[]
+  } catch {
+    return []
+  }
+}
+
+/** 서버 DB에 저장된 비공개 문항(학원 자료 등). 받으면 기기 캐시도 갱신 */
 export async function fetchServerQuestions(): Promise<Question[]> {
   const res = await fetch('/api/questions')
-  return res.ok ? ((await res.json()) as Question[]) : []
+  if (!res.ok) return cachedServerQuestions()
+  const qs = (await res.json()) as Question[]
+  try {
+    localStorage.setItem(Q_CACHE, JSON.stringify(qs))
+  } catch {
+    // 저장 공간 부족 시 캐시 없이 동작
+  }
+  return qs
 }
 
 /** 문항을 서버 DB에 추가 (같은 id는 갱신) */

@@ -5,6 +5,7 @@
 import crypto from 'node:crypto'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import compression from 'compression'
 import express from 'express'
 import pg from 'pg'
 
@@ -60,6 +61,7 @@ const samePassword = (input) => {
 
 const app = express()
 app.disable('x-powered-by')
+app.use(compression())
 app.use(express.json({ limit: '5mb' }))
 
 app.post('/api/login', async (req, res) => {
@@ -82,7 +84,8 @@ app.get('/api/me', (_req, res) => res.json({ ok: true }))
 
 app.get('/api/questions', async (_req, res) => {
   const { rows } = await pool.query('select data from pmp_questions order by id')
-  res.set('Cache-Control', 'no-store').json(rows.map((r) => r.data))
+  // 매번 재검증하되(ETag) 바뀌지 않았으면 304로 본문 전송 생략
+  res.set('Cache-Control', 'private, no-cache').json(rows.map((r) => r.data))
 })
 
 // 문항 일괄 추가·수정 (앱의 '문제 세트 가져오기' 또는 변환 파이프라인). 같은 id는 덮어쓴다
