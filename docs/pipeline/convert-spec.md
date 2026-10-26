@@ -18,17 +18,17 @@
    - perspective: PMI가 이런 상황을 바라보는 관점 1~2문장 (예: "서번트 리더는 지시보다 팀의 자기조직화를 돕는다").
    - tip: 풀이 팁 1문장 (키워드, 함정 보기 유형. 예: "'즉시', '스폰서에게 보고'가 들어간 보기는 대개 오답").
    - domain: people | process | business (2026 ECO 기준).
-   - topic: 아래 목록 중 정확히 하나.
-     people: 리더십·서번트리더십, 팀개발·팀헌장, 갈등관리, 이해관계자참여, 의사소통, 협상, 동기부여·성과관리, 가상팀·다양성, 코칭·멘토링·교육, 감성지능·윤리적행동, 의사결정·권한위임
-     process: 통합·변경통제, 범위·요구사항, 일정, 원가·EVM, 품질, 자원, 리스크, 조달·계약, 애자일실무(백로그·스프린트), 칸반·흐름, 추정, 하이브리드·테일러링, 종료·인계·교훈
-     business: 전략정렬·가치, 편익실현, 거버넌스·PMO, 규정준수, 윤리, 조직변화관리, 외부환경변화, 지속가능성·ESG, AI·디지털전환
+   - topic / eco: 2026 ECO 공식 과제 이름(ko)과 코드. 과제 정의 `docs/pipeline/eco-2026-tasks.txt`, 분류 규칙 `docs/pipeline/eco-classify-spec.md`. domain은 과제 영역을 따른다(P→people, R→process, B→business). 세부 주제(예: 갈등관리, EVM)는 tags에.
+     people: P1 공동 비전 수립, P2 갈등 관리, P3 프로젝트 팀 리딩, P4 이해관계자 참여, P5 이해관계자 기대 정렬, P6 이해관계자 기대 관리, P7 지식 이전, P8 의사소통 계획·관리
+     process: R1 통합 계획·인도 방식, R2 범위 개발·관리, R3 가치 기반 인도, R4 자원 계획·관리, R5 조달 계획·관리, R6 재무 계획·관리, R7 품질 계획·최적화, R8 일정 계획·관리, R9 프로젝트 상태 평가, R10 프로젝트 종료
+     business: B1 거버넌스 수립, B2 규정 준수, B3 변경 관리·통제, B4 장애물 제거·이슈 관리, B5 리스크 계획·관리, B6 지속적 개선, B7 조직 변화 지원, B8 외부 환경 변화 평가
    - tags: 세부 키워드 1~3개.
    - approach: predictive | agile | hybrid.
    - source: 예 "ITPE 2021.07 모의고사 #12".
    - id: "itpe-<배치코드>-<원문번호 3자리>" (예 itpe-2107-012).
 
 ## 출력 형식
-JSON 배열 하나 (UTF-8, 2칸 들여쓰기). 키: id, domain, edition, approach, topic, tags, stem, options, answer, explanation, optionNotes, intent, perspective, tip, diffNote(선택), source, answerBasis.
+JSON 배열 하나 (UTF-8, 2칸 들여쓰기). 키: id, domain, edition, approach, topic, eco, tags, stem, options, answer, explanation, optionNotes, intent, perspective, tip, diffNote(선택), source, answerBasis.
 저장 후 python3로 검증: JSON 파싱, id 중복 없음, answer 범위, optionNotes 길이 == options 길이, topic이 목록 안에 있음, 필수 필드 존재. 통과할 때까지 수정.
 
 ## 최종 보고 (짧게)

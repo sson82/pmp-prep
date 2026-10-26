@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { TASK_BY_KO } from '../data/eco'
 import { TOPICS } from '../data/topics'
 import type { FreqLevel } from '../lib/frequency'
 import { matchSource, SOURCE_FILTERS, type SourceFilter } from '../lib/origin'
@@ -49,7 +50,7 @@ export function Learn({ data, bank, freq, onStudy, onCompare }: Props) {
             </label>
           </span>
         </div>
-        <p className="muted">주제를 고르면 한 문제씩 풀고, 해설·문제 의도·출제 빈도·관점·팁을 바로 확인합니다.</p>
+        <p className="muted">PMI 공식 2026 시험 출제 범위(ECO)의 26개 과제별로 공부합니다. 과제를 고르면 한 문제씩 풀고 해설·문제 의도·출제 빈도·관점·팁을 바로 확인합니다.</p>
         <div className="seg wide" role="tablist">
           {(Object.keys(TOPICS) as Domain[]).map((d) => (
             <button key={d} role="tab" aria-selected={open === d} className={open === d ? 'on' : ''} onClick={() => setOpen(d)}>
@@ -83,7 +84,7 @@ export function Learn({ data, bank, freq, onStudy, onCompare }: Props) {
               <li key={t}>
                 <button className="topic" onClick={() => onStudy(t, pick(qs))} disabled={pick(qs).length === 0}>
                   <span>
-                    {f && <span className={`freq freq-${f.level}`}>{f.level}</span>} {t}
+                    {f && <span className={`freq freq-${f.level}`}>{f.level}</span>} <span className="eco-code">{TASK_BY_KO.get(t)?.code}</span> {t}
                     <span className="muted small"> {qs.length}문항</span>
                   </span>
                   <span className="topic-meta">

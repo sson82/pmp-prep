@@ -970,3 +970,10 @@ hr {
 .qtype-item .chip {
   margin-right: 4px;
 }
+
+.eco-code {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}

@@ -1,5 +1,6 @@
 import type { FreqLevel } from '../lib/frequency'
 import { isNew8, isOriginal } from '../lib/origin'
+import { TASK_BY_KO } from '../data/eco'
 import { questionTypes } from '../lib/qtype'
 import type { Question } from '../types'
 
@@ -18,6 +19,11 @@ export function Insight({ q, freq }: { q: Question; freq?: { count: number; leve
       {q.intent && (
         <p>
           <b>문제 의도</b> {q.intent}
+        </p>
+      )}
+      {q.topic && TASK_BY_KO.get(q.topic) && (
+        <p>
+          <b>ECO 과제</b> {TASK_BY_KO.get(q.topic)!.code} {q.topic} <span className="muted small">({TASK_BY_KO.get(q.topic)!.en})</span>
         </p>
       )}
       {freq && (

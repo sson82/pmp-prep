@@ -20,8 +20,10 @@ export interface Question {
   optionNotes?: string[]
   /** 7판 vs 8판 관점 차이 포인트 */
   diffNote?: string
-  /** 학습 체계 분류용 대표 주제 (src/data/topics.ts) */
+  /** 학습 체계 분류용 대표 주제 = 2026 ECO 과제 이름 (src/data/eco.ts) */
   topic?: string
+  /** 2026 ECO 과제 코드 (P1~P8, R1~R10, B1~B8) */
+  eco?: string
   /** 문제 의도: 이 문제가 확인하려는 역량 */
   intent?: string
   /** 바라보는 관점: PMI가 기대하는 판단 방식 */

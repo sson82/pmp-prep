@@ -1,0 +1,207 @@
+ DOMAIN I    PEOPLE—33% 
+Task 1 Develop a common vision  
+• Help ensure a shared vision with key stakeholders. 
+• Promote the shared vision. 
+• Keep the vision current. 
+• Break down situations to identify the root cause of a misunderstanding of the vision. 
+Task 2 
+Manage conflicts  
+• Identify conflict sources. 
+• Analyze the context for the conflict. 
+• Implement an agreed-on resolution strategy. 
+• Communicate conflict management principles with the team and external stakeholders. 
+• Establish an environment that fosters adherence to common ground rules. 
+• Manage and rectify ground rule violations. 
+Task 3 
+Lead the project team  
+• Establish expectations at the team level. 
+• Empower the team.  
+• Solve problems.  
+• Represent the voice of the team.  
+• Support the team's varied experiences, skills, and perspectives. 
+• Determine an appropriate leadership style. 
+• Establish clear roles and responsibilities within the team. 
+Task 4 
+Engage stakeholders  
+• Identify stakeholders. 
+• Analyze stakeholders. 
+• Analyze and tailor communication to stakeholder needs. 
+• Execute the stakeholder engagement plan. 
+• Optimize alignment among stakeholder needs, expectations, and project objectives. 
+• Build trust and influence stakeholders to accomplish project objectives. 
+Task 5 
+Align stakeholder expectations  
+• Categorize stakeholders. 
+• Identify stakeholder expectations.  
+• Facilitate discussions to align expectations. 
+• Organize and act on mentoring opportunities. 
+Task 6 
+Manage stakeholder expectations    
+• Identify internal and external customer expectations. 
+• Align and maintain outcomes to internal and external customer expectations. 
+• Monitor internal and external customer satisfaction/expectations and respond as needed. 
+Task 7 
+Help ensure knowledge transfer 
+• Identify knowledge critical to the project. 
+• Gather knowledge. 
+• Foster an environment for knowledge transfer. 
+Task 8 
+Plan and manage communication  
+• Define a communication strategy. 
+• Promote transparency and collaboration. 
+• Establish a feedback loop. 
+• Understand reporting requirements. 
+• Create reports aligned with sponsors and stakeholder expectations.  
+• Support reporting and governance processes. 
+DOMAIN II   PROCESS—41% 
+Task 1 
+Develop an integrated project management plan and plan delivery  
+• Assess project needs, complexity, and magnitude. 
+• Recommend a project management development approach (i.e., predictive, adaptive/agile, or 
+hybrid management). 
+• Determine critical information requirements (e.g., sustainability).  
+• Recommend a project execution strategy. 
+• Create an integrated project management plan.  
+• Estimate work effort and resource requirements. 
+• Assess consolidated project plans for dependencies, gaps, and continued business value. 
+• Maintain the integrated project management plan.  
+• Collect and analyze data to make informed project decisions. 
+Task 2 
+Develop and manage project scope  
+• Define scope. 
+• Obtain stakeholder agreement on project scope. 
+• Break down scope.  
+Task 3 
+Help ensure value-based delivery  
+• Identify value components with key stakeholders. 
+• Prioritize work based on value and stakeholder feedback. 
+• Assess opportunities to deliver value incrementally. 
+• Examine the business value throughout the project. 
+• Verify a measurement system is in place to track benefits. 
+• Evaluate delivery options to demonstrate value. 
+Task 4 
+Plan and manage resources  
+• Define and plan resources based on requirements.  
+• Manage and optimize resource needs and availability.  
+Task 5 
+Plan and manage procurement  
+• Plan procurement. 
+• Execute a procurement management plan. 
+• Select preferred contract types.  
+• Evaluate vendor performance. 
+• Verify objectives of the procurement agreement are met. 
+• Participate in agreement negotiations. 
+• Determine a negotiation strategy. 
+• Manage suppliers and contracts. 
+• Plan and manage the procurement strategy. 
+• Develop a delivery solution. 
+Task 6 
+Plan and manage finance  
+• Analyze project financial needs.  
+• Quantify risk and contingency financial allocations. 
+• Plan spend tracking throughout the project life cycle. 
+• Plan financial reporting. 
+• Anticipate future finance challenges. 
+• Monitor financial variations and work with the governance process. 
+• Manage financial reserves. 
+Task 7 
+Plan and optimize quality of products/deliverables  
+• Gather quality requirements for project deliverables. 
+• Plan quality processes and tools.  
+• Execute a quality management plan. 
+• Help ensure regulatory compliance. 
+• Manage cost of quality (CoQ) and sustainability. 
+• Conduct ongoing quality reviews.  
+• Implement continuous improvement. 
+Task 8 
+Plan and manage schedule  
+• Prepare a schedule based on the selected development approach 
+• Coordinate with other projects and operations. 
+• Estimate project tasks (milestones, dependencies, story points). 
+• Utilize benchmarks and historical data. 
+• Create a project schedule. 
+• Baseline a project schedule. 
+• Execute a schedule management plan. 
+• Analyze schedule variation. 
+Task 9 
+Evaluate project status  
+• Develop project metrics, analysis, and reconciliation. 
+• Identify and tailor needed artifacts. 
+• Help ensure artifacts are created, reviewed, updated, and documented. 
+• Help ensure accessibility of artifacts. 
+• Assess current progress.  
+• Measure, analyze, and update project metrics. 
+• Communicate project status. 
+• Continually assess the effectiveness of artifact management. 
+Task 10 
+Manage project closure  
+• Obtain project stakeholder approval of project completion. 
+• Determine criteria to successfully close the project or phase. 
+• Validate readiness for transition (e.g., to operations team or next phase). 
+• Conclude activities to close the project or phase (e.g., final lessons learned, retrospectives, 
+procurement, financials, resources). 
+DOMAIN III BUSINESS ENVIRONMENT—26% 
+Task 1 
+Define and establish project governance  
+• Describe and establish the structure, rules, procedures, reporting, ethics, and policies through the 
+use of organizational process assets (OPAs). 
+• Define success metrics.  
+• Outline governance escalation paths and thresholds. 
+Task 2 
+Plan and manage project compliance  
+• Confirm project compliance requirements (e.g., security, health and safety, sustainability, regulatory 
+compliance). 
+• Classify compliance categories. 
+• Determine potential threats to compliance. 
+• Use methods to support compliance. 
+• Analyze the consequences of noncompliance. 
+• Determine the necessary approach and action(s) to address compliance needs. 
+• Measure the extent to which the project is in compliance. 
+Task 3 
+Manage and control changes  
+• Execute the change control process. 
+• Communicate the status of proposed changes. 
+• Implement approved changes to the project. 
+• Update project documentation to reflect changes. 
+Task 4 
+Remove impediments and manage issues   
+• Evaluate the impact of impediments. 
+• Prioritize and highlight impediments. 
+• Determine and apply an intervention strategy to remove/minimize impediments. 
+• Reassess continually to help ensure impediments, obstacles, and blockers for the team are being 
+addressed. 
+• Recognize when a risk becomes an issue. 
+• Collaborate with relevant stakeholders on an approach to resolve the issues. 
+Task 5 
+Plan and manage risk 
+• Identify risks. 
+• Analyze risks. 
+• Monitor and control risks. 
+• Develop a risk management plan. 
+• Maintain a risk register (e.g., poor IT security). 
+• Execute a risk management plan (e.g., risk response for security and managing sustainability risks). 
+• Communicate the status of a risk impact on the project. 
+Task 6 
+Continuous improvement 
+• Utilize lessons learned. 
+• Help ensure continuous improvement processes are updated. 
+• Update organizational process assets (OPAs). 
+Task 7 
+Support organizational change 
+• Assess organizational culture. 
+• Evaluate the impact of organizational change on the project and determine required actions. 
+Task 8 
+Evaluate external business environment changes 
+• Survey changes to the external business environment (e.g., regulations, technology, geopolitical, 
+market). 
+• Assess and prioritize the impact on project scope/backlog based on changes in the external 
+business environment. 
+• Continually review the external business environment for impacts on project scope/backlog. 
+PMP CERTIFICATION ELIGIBILITY 
+REQUIREMENTS 
+PMP certification holders are expected to have a robust background, which includes academic and commercial 
+training as well as professional experience working as a project practitioner. Candidates for the PMP  
+certification must apply to gain eligibility to take the PMP certification exam. 
+To be eligible for the PMP certification, you must meet one of the educational and professional experience 
+paths listed below. All project management experience must have been accrued within the last 10 years in a 
+professional setting prior to your application submission. 

@@ -7,7 +7,9 @@ PMP 시험 반복 학습 앱. React + Vite 프런트(`src/`), Render용 Express 
 - 공개판: GitHub Pages (`npm run deploy`, 오리지널 180문항만), claude.ai 아티팩트(비공개).
 
 ## 문항 데이터 규칙
-- `src/data/generated/*.json`: 직접 작성한 오리지널 180문항(공개 가능). 영역 비율 33/41/26, 보기 길이 편향·주제 분류는 `npx vitest run`이 검사.
+- `src/data/generated/*.json`: 직접 작성한 오리지널 문항(공개 가능, id `o8-`는 8판 기준 신규). 영역 비율 33/41/26(±3%p), 보기 길이 편향·주제 분류는 `npx vitest run`이 검사.
+- 학습 체계 = PMI 공식 2026 ECO 26개 과제(`src/data/eco.ts`, 원문 `docs/pipeline/eco-2026-tasks.txt`). 문항의 topic=과제 이름, eco=코드(P1~P8·R1~R10·B1~B8), domain=과제 영역. 리스크·변경 통제·이슈·거버넌스는 Business(B), 의사소통·지식 이전은 People(P). 분류 규칙 `docs/pipeline/eco-classify-spec.md`, 일괄 반영 `python3 scripts/apply_eco.py <매핑> <파일...>`.
+- 공식 ECO: 180문항(10개 미채점)·240분, 예측형 약 40% / 애자일·하이브리드 약 60%.
 - 학원 수험자료에서 변환한 문항은 저작권(제3자 공유 금지) 때문에 **절대 git에 넣지 않는다**. `private/`(gitignore)에만 두고 Render DB로만 올린다. 스크린샷·로그에도 원문을 남기지 말 것.
 - 덤프(유출 시험 문제)로 표시된 자료는 변환하지 않는다.
 
