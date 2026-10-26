@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { TOPICS } from '../data/topics'
 import type { FreqLevel } from '../lib/frequency'
+import { isNew8 } from '../lib/origin'
 import type { Domain, Question, StoreData } from '../types'
 import { DOMAIN_LABEL } from '../types'
 
@@ -16,6 +17,7 @@ interface Props {
 export function Learn({ data, bank, freq, onStudy, onCompare }: Props) {
   const [open, setOpen] = useState<Domain>('people')
   const [unseenOnly, setUnseenOnly] = useState(false)
+  const [new8Only, setNew8Only] = useState(false)
 
   const stat = (qs: Question[]) => {
     const seen = qs.filter((q) => data.cards[q.id]).length
@@ -24,7 +26,10 @@ export function Learn({ data, bank, freq, onStudy, onCompare }: Props) {
     const acc = at.length ? Math.round((at.filter((a) => a.correct).length / at.length) * 100) : null
     return { seen, acc }
   }
-  const pick = (qs: Question[]) => (unseenOnly ? qs.filter((q) => !data.cards[q.id]) : qs)
+  const pick = (qs: Question[]) => qs.filter((q) => (!unseenOnly || !data.cards[q.id]) && (!new8Only || isNew8(q)))
+  const new8Count = bank.filter(isNew8).length
+  // 표시용 문항 집합: '8판 신규만'이면 신규 문항만 세고 진도도 그 기준으로 본다
+  const scope = (qs: Question[]) => (new8Only ? qs.filter(isNew8) : qs)
   const untagged = bank.filter((q) => !q.topic)
 
   return (
@@ -32,9 +37,15 @@ export function Learn({ data, bank, freq, onStudy, onCompare }: Props) {
       <div className="card">
         <div className="row between">
           <h2>문제 학습</h2>
-          <label className="row small">
-            <input type="checkbox" checked={unseenOnly} onChange={(e) => setUnseenOnly(e.target.checked)} />안 푼 문항만
-          </label>
+          <span className="row">
+            <label className="row small">
+              <input type="checkbox" checked={new8Only} onChange={(e) => setNew8Only(e.target.checked)} />
+              <span className="chip new8">8판 신규</span>만 ({new8Count})
+            </label>
+            <label className="row small">
+              <input type="checkbox" checked={unseenOnly} onChange={(e) => setUnseenOnly(e.target.checked)} />안 푼 문항만
+            </label>
+          </span>
         </div>
         <p className="muted">주제를 고르면 한 문제씩 풀고, 해설·문제 의도·출제 빈도·관점·팁을 바로 확인합니다.</p>
         <div className="seg wide" role="tablist">
@@ -45,7 +56,7 @@ export function Learn({ data, bank, freq, onStudy, onCompare }: Props) {
           ))}
         </div>
         {(() => {
-          const all = bank.filter((q) => q.domain === open)
+          const all = scope(bank.filter((q) => q.domain === open))
           const s = stat(all)
           return (
             <button className="topic all" onClick={() => onStudy(`${DOMAIN_LABEL[open].split(' ')[0]} 전체`, pick(all))} disabled={pick(all).length === 0}>
@@ -62,7 +73,7 @@ export function Learn({ data, bank, freq, onStudy, onCompare }: Props) {
         })()}
         <ul className="topics">
           {TOPICS[open].map((t) => {
-            const qs = bank.filter((q) => q.domain === open && q.topic === t)
+            const qs = scope(bank.filter((q) => q.domain === open && q.topic === t))
             if (qs.length === 0) return null
             const s = stat(qs)
             const f = freq.get(t)

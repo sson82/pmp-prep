@@ -942,3 +942,8 @@ hr {
   color: var(--muted);
   font-weight: 600;
 }
+
+.chip.new8 {
+  color: var(--accent-text);
+  background: var(--ed8);
+}

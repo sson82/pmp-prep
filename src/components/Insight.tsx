@@ -1,4 +1,5 @@
 import type { FreqLevel } from '../lib/frequency'
+import { isNew8 } from '../lib/origin'
 import type { Question } from '../types'
 
 /** 해설 아래에 붙는 학습 포인트: 문제 의도 · 출제 빈도 · 관점 · 팁 · 판 차이 · 정답 근거 */
@@ -33,6 +34,7 @@ export function Insight({ q, freq }: { q: Question; freq?: { count: number; leve
       {q.answerBasis === 'ai' && <p className="muted small">정답은 원본에 없어 AI가 두 번 독립적으로 풀어 일치한 답입니다. 강의 해설과 다르면 알려 주세요.</p>}
       {q.answerBasis === 'review' && <p className="warn small">⚠ 정답 검토 필요: AI 풀이가 엇갈린 문항입니다.</p>}
       {q.source && <p className="muted small">출처: {q.source}</p>}
+      {isNew8(q) && <p className="muted small">출처: 8판(2026 개정 시험) 기준 신규 작성 문항</p>}
     </div>
   )
 }
