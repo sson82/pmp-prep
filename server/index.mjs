@@ -3,8 +3,6 @@
 // - 비밀번호 로그인(서명 쿠키) 뒤에서 비공개 문항(/api/questions)과 학습 기록(/api/progress) 제공
 // 환경 변수: DATABASE_URL, APP_PASSWORD, SESSION_SECRET, PORT
 import crypto from 'node:crypto'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import compression from 'compression'
 import express from 'express'
 import pg from 'pg'
@@ -62,6 +60,21 @@ const samePassword = (input) => {
 const app = express()
 app.disable('x-powered-by')
 app.use(compression())
+// GitHub Pages(앱 화면)에서 이 서버의 API를 호출할 수 있게 허용. 인증은 쿠키 대신 Bearer 토큰
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ?? 'https://sson82.github.io').split(',')
+const APP_URL = process.env.APP_URL ?? 'https://sson82.github.io/pmp-prep/'
+app.use((req, res, next) => {
+  const origin = req.headers.origin
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    res.set('Access-Control-Allow-Origin', origin)
+    res.set('Vary', 'Origin')
+    res.set('Access-Control-Allow-Headers', 'Authorization, Content-Type')
+    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS')
+    res.set('Access-Control-Max-Age', '86400')
+  }
+  if (req.method === 'OPTIONS') return res.sendStatus(204)
+  next()
+})
 app.use(express.json({ limit: '5mb' }))
 
 app.post('/api/login', async (req, res) => {
@@ -69,8 +82,9 @@ app.post('/api/login', async (req, res) => {
     await new Promise((r) => setTimeout(r, 800)) // 무차별 대입 완화
     return res.status(401).json({ error: '비밀번호가 올바르지 않습니다.' })
   }
-  res.cookie(COOKIE, makeToken(), { httpOnly: true, secure: req.secure || req.headers['x-forwarded-proto'] === 'https', sameSite: 'lax', maxAge: YEAR })
-  res.json({ ok: true })
+  const token = makeToken()
+  res.cookie(COOKIE, token, { httpOnly: true, secure: req.secure || req.headers['x-forwarded-proto'] === 'https', sameSite: 'lax', maxAge: YEAR })
+  res.json({ ok: true, token })
 })
 
 app.post('/api/logout', (_req, res) => {
@@ -78,7 +92,8 @@ app.post('/api/logout', (_req, res) => {
   res.json({ ok: true })
 })
 
-app.use('/api', (req, res, next) => (validToken(readCookie(req)) ? next() : res.status(401).json({ error: 'login required' })))
+const bearer = (req) => (req.headers.authorization ?? '').replace(/^Bearer\s+/i, '')
+app.use('/api', (req, res, next) => (validToken(bearer(req)) || validToken(readCookie(req)) ? next() : res.status(401).json({ error: 'login required' })))
 
 app.get('/api/me', (_req, res) => res.json({ ok: true }))
 
@@ -137,9 +152,8 @@ app.put('/api/progress', async (req, res) => {
   res.status(409).json({ data: cur.rows[0].data, version: Number(cur.rows[0].version) })
 })
 
-const dist = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist')
-app.use(express.static(dist, { index: false }))
-app.get(/^(?!\/api\/).*/, (_req, res) => res.sendFile(path.join(dist, 'index.html')))
+// 앱 화면은 GitHub Pages 하나로 통일: 이 서버 주소로 들어오면 GitHub 주소로 보낸다
+app.get(/^(?!\/api\/).*/, (_req, res) => res.redirect(302, APP_URL))
 
 const port = Number(process.env.PORT) || 3000
 app.listen(port, () => console.log(`PMP Prep server on :${port}`))

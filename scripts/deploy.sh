@@ -1,6 +1,8 @@
 #!/bin/sh
-# dist/를 gh-pages 브랜치로 push → GitHub Pages가 자동 반영 (1~2분)
+# GitHub Pages 배포: 앱 화면은 GitHub, 비공개 문항·학습 기록은 Render API(로그인)에서 가져온다.
 set -e
+cd "$(dirname "$0")/.."
+VITE_API_BASE=https://pmp-prep-d1iu.onrender.com npm run build
 cd dist
 touch .nojekyll
 rm -rf .git

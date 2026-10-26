@@ -37,7 +37,12 @@ export default function App() {
   useEffect(() => {
     void detectServer().then(setMode)
   }, [])
-  if (mode === null) return null
+  if (mode === null)
+    return (
+      <main className="app login">
+        <p className="muted center">서버에 연결하는 중… (오래 쉬었다면 처음 한 번은 30초쯤 걸립니다)</p>
+      </main>
+    )
   if (mode === 'login') return <Login onDone={() => setMode('ready')} />
   return <Main mode={mode} />
 }
