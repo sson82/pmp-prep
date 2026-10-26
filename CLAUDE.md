@@ -3,8 +3,9 @@
 PMP 시험 반복 학습 앱. React + Vite 프런트(`src/`), Render용 Express 서버(`server/index.mjs`), Postgres(문항 `pmp_questions`, 학습 기록 `pmp_progress`).
 
 ## 배포
-- 실사용: Render 서비스 `pmp-prep` (https://pmp-prep-d1iu.onrender.com). 로그인(APP_PASSWORD) 뒤에서 비공개 문항 + 기기 간 기록 동기화. push 후 자동 배포가 안 되면 `python3 scripts/render_deploy.py` (private/.env의 RENDER_API_KEY 사용).
-- 공개판: GitHub Pages (`npm run deploy`, 오리지널 180문항만), claude.ai 아티팩트(비공개).
+- 사용 주소는 **GitHub Pages 하나**: https://sson82.github.io/pmp-prep/ (`sh scripts/deploy.sh`, 빌드 시 VITE_API_BASE=Render 주소).
+- Render 서비스 `pmp-prep`(https://pmp-prep-d1iu.onrender.com)는 **API 전용**: 로그인(APP_PASSWORD → 토큰, Authorization: Bearer), 비공개 문항 `/api/questions`, 기기 간 기록 `/api/progress`. CORS는 ALLOWED_ORIGINS(기본 https://sson82.github.io). 화면 요청은 GitHub 주소로 302. push 후 자동 배포가 안 되면 `python3 scripts/render_deploy.py`.
+- 서버 코드를 바꾸면 Render 배포, 화면 코드를 바꾸면 GitHub Pages 배포(둘 다 바꿨으면 둘 다).
 
 ## 문항 데이터 규칙
 - `src/data/generated/*.json`: 직접 작성한 오리지널 문항(공개 가능, id `o8-`는 8판 기준 신규). 영역 비율 33/41/26(±3%p), 보기 길이 편향·주제 분류는 `npx vitest run`이 검사.
