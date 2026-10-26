@@ -947,3 +947,26 @@ hr {
   color: var(--accent-text);
   background: var(--ed8);
 }
+
+.chip.orig {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.chip.academy {
+  color: var(--ed7);
+  background: color-mix(in srgb, var(--ed7) 14%, transparent);
+}
+.select.compact {
+  margin-top: 0;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+}
+
+.qtype {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.qtype-item .chip {
+  margin-right: 4px;
+}

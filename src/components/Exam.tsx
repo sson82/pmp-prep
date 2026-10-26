@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ECO_NOTE } from '../data/editionDiff'
-import { isNew8 } from '../lib/origin'
+import { matchSource, SOURCE_FILTERS, type SourceFilter } from '../lib/origin'
 import { buildMock, shuffle } from '../lib/session'
 import type { Domain, Question, StoreData } from '../types'
 import { DOMAIN_LABEL } from '../types'
@@ -20,9 +20,9 @@ export function Exam({ data, bank, onStart }: Props) {
   const [timed, setTimed] = useState(true)
   const [ecoRatio, setEcoRatio] = useState(true)
   const [unseenOnly, setUnseenOnly] = useState(false)
-  const [new8Only, setNew8Only] = useState(false)
+  const [source, setSource] = useState<SourceFilter>('all')
 
-  const pool = bank.filter((q) => domains.includes(q.domain) && (!unseenOnly || !data.cards[q.id]) && (!new8Only || isNew8(q)))
+  const pool = bank.filter((q) => domains.includes(q.domain) && (!unseenOnly || !data.cards[q.id]) && matchSource(q, source))
   const n = Math.min(count, pool.length)
   const allDomains = domains.length === 3
 
@@ -70,10 +70,16 @@ export function Exam({ data, bank, onStart }: Props) {
           실제 시험 영역 비율로 출제 (People 33 · Process 41 · Business 26)
         </label>
       )}
-      <label className="row">
-        <input type="checkbox" checked={new8Only} onChange={(e) => setNew8Only(e.target.checked)} />
-        <span className="chip new8">8판 신규</span> 문항만 ({bank.filter(isNew8).length})
-      </label>
+      <fieldset className="field">
+        <legend>출처</legend>
+        <div className="toggles">
+          {SOURCE_FILTERS.map(([v, label]) => (
+            <button key={v} className={source === v ? 'on' : ''} aria-pressed={source === v} onClick={() => setSource(v)}>
+              {label} <span className="muted small">{bank.filter((q) => matchSource(q, v)).length}</span>
+            </button>
+          ))}
+        </div>
+      </fieldset>
       <label className="row">
         <input type="checkbox" checked={unseenOnly} onChange={(e) => setUnseenOnly(e.target.checked)} />안 푼 문항만
       </label>

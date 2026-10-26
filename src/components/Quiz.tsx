@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { FreqLevel } from '../lib/frequency'
-import { isNew8 } from '../lib/origin'
+import { SourceBadges } from '../lib/origin'
 import { shuffle } from '../lib/session'
 import { Insight } from './Insight'
 import type { Attempt, Confidence, Question, SessionMode } from '../types'
@@ -137,7 +137,7 @@ export function Quiz({ title, questions, mode, timeLimitSec, onRecord, onExit, s
       <article className="card">
         <div className="chips">
           <span className="chip">{DOMAIN_LABEL[q.domain].split(' ')[0]}</span>
-          {isNew8(q) && <span className="chip new8">8판 신규</span>}
+          <SourceBadges q={q} />
           <span className={`chip ed-${q.edition}`}>{EDITION_LABEL[q.edition]}</span>
           <span className="chip">{APPROACH_LABEL[q.approach]}</span>
           {multi && <span className="chip warn">복수 선택 ({q.answer.length}개)</span>}

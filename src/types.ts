@@ -79,9 +79,9 @@ export const DOMAIN_LABEL: Record<Domain, string> = {
 }
 
 export const EDITION_LABEL: Record<Edition, string> = {
-  '7th': '7판',
-  '8th': '8판',
-  both: '공통',
+  '7th': '7판 개념',
+  '8th': '8판 개념',
+  both: '판 공통',
 }
 
 export const APPROACH_LABEL: Record<Approach, string> = {

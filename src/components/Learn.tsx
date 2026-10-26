@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { TOPICS } from '../data/topics'
 import type { FreqLevel } from '../lib/frequency'
-import { isNew8 } from '../lib/origin'
+import { matchSource, SOURCE_FILTERS, type SourceFilter } from '../lib/origin'
 import type { Domain, Question, StoreData } from '../types'
 import { DOMAIN_LABEL } from '../types'
 
@@ -17,7 +17,7 @@ interface Props {
 export function Learn({ data, bank, freq, onStudy, onCompare }: Props) {
   const [open, setOpen] = useState<Domain>('people')
   const [unseenOnly, setUnseenOnly] = useState(false)
-  const [new8Only, setNew8Only] = useState(false)
+  const [source, setSource] = useState<SourceFilter>('all')
 
   const stat = (qs: Question[]) => {
     const seen = qs.filter((q) => data.cards[q.id]).length
@@ -26,10 +26,9 @@ export function Learn({ data, bank, freq, onStudy, onCompare }: Props) {
     const acc = at.length ? Math.round((at.filter((a) => a.correct).length / at.length) * 100) : null
     return { seen, acc }
   }
-  const pick = (qs: Question[]) => qs.filter((q) => (!unseenOnly || !data.cards[q.id]) && (!new8Only || isNew8(q)))
-  const new8Count = bank.filter(isNew8).length
-  // 표시용 문항 집합: '8판 신규만'이면 신규 문항만 세고 진도도 그 기준으로 본다
-  const scope = (qs: Question[]) => (new8Only ? qs.filter(isNew8) : qs)
+  const pick = (qs: Question[]) => qs.filter((q) => (!unseenOnly || !data.cards[q.id]) && matchSource(q, source))
+  // 표시용 문항 집합: 출처 필터를 고르면 그 출처 문항만 세고 진도도 그 기준으로 본다
+  const scope = (qs: Question[]) => qs.filter((q) => matchSource(q, source))
   const untagged = bank.filter((q) => !q.topic)
 
   return (
@@ -38,10 +37,13 @@ export function Learn({ data, bank, freq, onStudy, onCompare }: Props) {
         <div className="row between">
           <h2>문제 학습</h2>
           <span className="row">
-            <label className="row small">
-              <input type="checkbox" checked={new8Only} onChange={(e) => setNew8Only(e.target.checked)} />
-              <span className="chip new8">8판 신규</span>만 ({new8Count})
-            </label>
+            <select className="select compact" value={source} onChange={(e) => setSource(e.target.value as SourceFilter)} aria-label="출처">
+              {SOURCE_FILTERS.map(([v, label]) => (
+                <option key={v} value={v}>
+                  출처: {label} ({bank.filter((q) => matchSource(q, v)).length})
+                </option>
+              ))}
+            </select>
             <label className="row small">
               <input type="checkbox" checked={unseenOnly} onChange={(e) => setUnseenOnly(e.target.checked)} />안 푼 문항만
             </label>
